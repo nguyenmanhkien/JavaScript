@@ -1,20 +1,54 @@
-var list - document.getElementsByTagName('ul')[0];
-var newItemLast = document.createElement('li');
-var newTextLast = document.createTextNode('cream');
-newItemLast.appendChild(newTextLast);
+var noteInput, noteName, textEntered, target;
 
-var newItemFirst = document.createElement('li');
-var newTextFirst = document.createTextNode('kale');
-newItemFirst.appendChild(newTextFirst);
-list.insertBefore(newItemFirst, list.firstChild);
+noteName = document.getElementById('noteName');
+noteInput = document.getElementById('noteInput');
 
-var listItems = document.querySelectorAll('li');
-var i;
-for(i = 0;i < listItems.length;i++){
-    listItems[i].className = 'cool';
+function writeLabel(e){
+    if (!e){
+        e = window.event;
+    }
+    target = e.target || e.srcElement;
+    textEntered = target.value;
+    noteName.textContent = textEntered;
 }
-var heading = document.querySelector('h2');
-var headingText = heading.firstChild.nodeValue;
-var totalItems = listItems.length;
-var newHeasing = headingText + '<span>' + totalItems + '</span>';
-heading.innerHTML = newHeasing;
+
+function recorderControls(e){
+    if(!e){
+        e = window.event;
+    }
+    target = e.target || e.srcElement;
+    if (e.preventDefault){
+        e.preventDefault();
+    }else{
+        e.returnValue = false;
+    }
+    switch (target.getAttribute('date-state')){
+        case 'record':
+            record(target);
+            break;
+        case 'stop':
+            stop(target);
+            break;
+    }
+}
+
+function record(target){
+    target.setAttribute('data-state', 'stop');
+    target.textContent = 'stop';
+}
+function top(target){
+    target.setAttribute('data-state','stop');
+    target.textContent = 'record';
+}
+
+if (document.addEventListener){
+    document.addEventListener('click',function (e){
+        recorderControls(e);
+    },false);
+    noteInput.addEventListener('input',writeLabel,false);
+}else {
+    document.attachEvent('onclick',function (e){
+        recorderControls(e);
+    });
+    noteInput.attachEvent('onkeyup',writeLabel);
+}
